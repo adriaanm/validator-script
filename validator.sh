@@ -494,18 +494,14 @@ else
     say "### the Scala compiler was found in local maven $LOCAL_M2_REPO for $SCALAHASH"
 fi
 
-# Prepare .sbt/repositories resolution
-# Am I using sbt-extras ?
+# Am I using sbt-extras? I.e., do we need to use -sbt-dir?
 set +e
-sbt --version 2>&1|head -n 1|grep -qe "Detected"
+sbt -h 2>&1 | grep -qe "-sbt-dir"
 sbt_extraed=$?
 set -e
 DEST_REPO_FILE=$SBT_HOME/repositories
 if [ $sbt_extraed -eq 0 ]; then
-    SBT_INSTALLED=$(sbt --version 2>&1 |head -n 1|sed -rn 's/.*?([0-9]+\.[0-9]+\.[0-9]+(-[A-Z 0-9]+)?)/\1/p')
-    if [ -z $SBT_BOOTSTRAP_VERSION ]; then
-        SBT_BOOTSTRAP_VERSION=$SBT_INSTALLED
-    fi
+    # sbt-extras does not honor an explicit -Dsbt.global.base
     SBT_ARGS="-verbose -debug -sbt-dir $SBT_HOME -ivy $IVY_CACHE"
     say "### sbt-extras detected, using args $SBT_ARGS"
 else
