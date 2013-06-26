@@ -27,13 +27,13 @@ BASEDIR=$ORIGPWD
 # Make sure this is an absolute path with preceding '/'
 LOCAL_M2_REPO="$BASEDIR/m2repo"
 LOGGINGDIR="$BASEDIR/logs"
-mkdir $LOGGINGDIR
+mkdir -p $LOGGINGDIR
 
 unset SBT_HOME
 SBT_HOME="$BASEDIR/.sbt"
-mkdir $SBT_HOME
+mkdir -p $SBT_HOME
 IVY_CACHE="$BASEDIR/.ivy2"
-mkdir $IVY_CACHE
+mkdir -p $IVY_CACHE
 
 # :docstring usage:
 # Usage: usage
