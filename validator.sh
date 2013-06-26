@@ -502,7 +502,7 @@ set -e
 DEST_REPO_FILE=$SBT_HOME/repositories
 if [ $sbt_extraed -eq 0 ]; then
     # sbt-extras does not honor an explicit -Dsbt.global.base
-    SBT_ARGS="-verbose -debug -sbt-dir $SBT_HOME -ivy $IVY_CACHE"
+    SBT_ARGS="-verbose -debug -no-colors -sbt-dir $SBT_HOME -ivy $IVY_CACHE"
     say "### sbt-extras detected, using args $SBT_ARGS"
 else
     SBT_ARGS="-verbose -debug -Dsbt.global.base=$SBT_HOME -Dsbt.ivy.home=$IVY_CACHE"
