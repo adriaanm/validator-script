@@ -22,9 +22,18 @@ BUILDIT=""
 ORIGPWD=`pwd`
 BASEDIR=$ORIGPWD
 
+# don't share any caches, sbt dirs, repos,... to avoid concurrent writes
+# keep them local to the workspace also lets us diagnose problems more easily
 # Make sure this is an absolute path with preceding '/'
 LOCAL_M2_REPO="$BASEDIR/m2repo"
-LOGGINGDIR="$HOME"
+LOGGINGDIR="$BASEDIR/logs"
+mkdir $LOGGINGDIR
+
+unset SBT_HOME
+SBT_HOME="$BASEDIR/.sbt"
+mkdir $SBT_HOME
+IVY_CACHE="$BASEDIR/.ivy2"
+mkdir $IVY_CACHE
 
 # :docstring usage:
 # Usage: usage
@@ -279,7 +288,7 @@ function sbtbuild(){
     echo "sbt.override.build.repos=true" >> project/build.properties
 
     set +e
-    sbt -verbose -debug  -Dsbt.ivy.home=$IVY_CACHE/.cache/.ivy2/ "reboot full" clean "show scala-instance" "set every crossScalaVersions := Seq(\"$SCALAVERSION-$SCALAHASH-SNAPSHOT\")"\
+    sbt $SBT_ARGS "reboot full" clean "show scala-instance" "set every crossScalaVersions := Seq(\"$SCALAVERSION-$SCALAHASH-SNAPSHOT\")"\
      "set every version := \"$SBTVERSION\""\
      "set every scalaVersion := \"$SCALAVERSION-$SCALAHASH-SNAPSHOT\""\
      'set every Util.includeTestDependencies := false' \
@@ -327,7 +336,7 @@ function sbinarybuild(){
     echo "sbt.override.build.repos=true" >> project/build.properties
 
     set +e
-    sbt -verbose -debug -Dsbt.ivy.home=$IVY_CACHE/.cache/.ivy2/ "reboot full" clean "show scala-instance" \
+    sbt $SBT_ARGS "reboot full" clean "show scala-instance" \
   "set every scalaVersion := \"$SCALAVERSION-$SCALAHASH-SNAPSHOT\""\
   'set (version in core) ~= { v => v + "-pretending-SNAPSHOT" }' \
   "set every crossScalaVersions := Seq(\"$SCALAVERSION-$SCALAHASH-SNAPSHOT\")"\
@@ -410,9 +419,6 @@ SBINARYDIR="$BASEDIR/sbinary/"
 REFACDIR="$BASEDIR/scala-refactoring/"
 SCALARIFORMDIR="$BASEDIR/scalariform"
 IDEDIR="$BASEDIR/scala-ide/"
-if [ -z $SBT_HOME ]; then
-    SBT_HOME=$HOME/.sbt
-fi
 
 set_versions
 say "### logfile $LOGGINGDIR/compilation-$SCALADATE-$SCALAHASH.log"
@@ -494,22 +500,21 @@ set +e
 sbt --version 2>&1|head -n 1|grep -qe "Detected"
 sbt_extraed=$?
 set -e
+DEST_REPO_FILE=$SBT_HOME/repositories
 if [ $sbt_extraed -eq 0 ]; then
     SBT_INSTALLED=$(sbt --version 2>&1 |head -n 1|sed -rn 's/.*?([0-9]+\.[0-9]+\.[0-9]+(-[A-Z 0-9]+)?)/\1/p')
     if [ -z $SBT_BOOTSTRAP_VERSION ]; then
         SBT_BOOTSTRAP_VERSION=$SBT_INSTALLED
     fi
-    DEST_REPO_FILE=$SBT_HOME/$SBT_BOOTSTRAP_VERSION/repositories
-    mkdir -p $SBT_HOME/$SBT_BOOTSTRAP_VERSION
-    say "### sbt-extras detected, will write resolvers to $DEST_REPO_FILE"
+    SBT_ARGS="-verbose -debug -sbt-dir $SBT_HOME -ivy $IVY_CACHE"
+    say "### sbt-extras detected, using args $SBT_ARGS"
 else
-    DEST_REPO_FILE=$SBT_HOME/repositories
-    say "### vanilla sbt detected, will write resolvers to $DEST_REPO_FILE"
+    SBT_ARGS="-verbose -debug -Dsbt.global.base=$SBT_HOME -Dsbt.ivy.home=$IVY_CACHE"
+    say "### vanilla sbt detected, using args $SBT_ARGS"
 fi
 # To do the minimal amount of change, this should properly be
 # executed if (! do_i_have [sbinary_args] || ! do_i_have
 # [sbt_args]) but it's too little gain to test for
-IVY_CACHE=$(mktemp -d -t ivycacheXXX)
 (test preparesbt) || exit 125
 
 #####################################################
