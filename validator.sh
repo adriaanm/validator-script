@@ -448,7 +448,7 @@ if [ -d $SCALADIR/dists/maven/latest ]; then
     # dists/maven under the command-line hash is OK. If there is
     # one this is a scala checkout, and I need to be a bit more clever.
     if [[ ! -f $SCALADIR/Readme.rst || $git_deployee = $SCALAHASH ]]; then
-        (test ant -Dmaven.version.number=$SCALAVERSION-$SCALAHASH-SNAPSHOT -Dlocal.snapshot.repository="$LOCAL_M2_REPO" deploy.snapshot.local) | tee -a $LOGGINGDIR/compilation-$SCALADATE-$SCALAHASH.log
+        (test ant -Dmaven.version.number=$SCALAVERSION-$SCALAHASH-SNAPSHOT -Dlocal.snapshot.repository="$LOCAL_M2_REPO" deploy.local) | tee -a $LOGGINGDIR/compilation-$SCALADATE-$SCALAHASH.log
         cd -
     else
         say "### the $SCALADIR/dists/maven/latest distrib does not match the hash of $SCALAHASH I am supposed to build, aborting"
