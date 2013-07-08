@@ -4,7 +4,7 @@
 # versions of sbinary, sbt, scala-refactoring and scala-ide.
 
 SCALAURL="git://github.com/scala/scala.git"
-SBINARYURL="git://github.com/scala-ide/sbinary.git"
+SBINARYURL="git://github.com/adriaanm/sbinary.git"
 SBTURL="git://github.com/sbt/sbt.git"
 SCALARIFORMURL="git://github.com/mdr/scalariform.git"
 REFACURL="git://github.com/scala-ide/scala-refactoring.git"
