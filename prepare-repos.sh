@@ -31,18 +31,13 @@ function getOrUpdate(){
     if [ ! -d $1 ]; then
         git clone --depth 1 $2
         deepen='true'
-    else
-        pushd $1
-        originUrl=$(git config --get remote.origin.url)
-        if [ ! $originUrl = $2 ]; then
-            echo "Can't understand repository structure in $1, aborting"
-            exit 1
-        fi
-        git fetch origin
-        popd
     fi
     pushd $1
-    git checkout -q $3
+
+    git fetch $2 $3
+
+    git checkout -q FETCH_HEAD
+
     if [ $deepen ]; then
         echo "Deepening $1 by $4 commits"
         git fetch --depth $4
@@ -88,13 +83,13 @@ cd $BASEDIR
 if [ -z $SCALACOMMIT ]; then
     getOrUpdate $SCALADIR $SCALAURL $SCALACOMMIT 2000
 fi
-getOrUpdate $SBINARYDIR $SBINARYURL "origin/HEAD" 20
+getOrUpdate $SBINARYDIR $SBINARYURL "HEAD" 20
 # TODO : fix up some symbolic-ref detection for sbt, this is
 # gonna blow up in our face
-getOrUpdate $SBTDIR $SBTURL "origin/HEAD" 160
-getOrUpdate $SCALARIFORMDIR $SCALARIFORMURL "origin/HEAD" 20
-getOrUpdate $REFACDIR $REFACURL "origin/HEAD" 100
-getOrUpdate $IDEDIR $IDEURL "origin/HEAD" 700
+getOrUpdate $SBTDIR $SBTURL "HEAD" 160
+getOrUpdate $SCALARIFORMDIR $SCALARIFORMURL "HEAD" 20
+getOrUpdate $REFACDIR $REFACURL "HEAD" 100
+getOrUpdate $IDEDIR $IDEURL "HEAD" 700
 
 # ths depends on the fact that the default clone checkout is the
 # dev branch (master or the local equivalent)
