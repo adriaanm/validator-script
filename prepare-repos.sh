@@ -7,7 +7,7 @@ SCALAURL="git://github.com/scala/scala.git"
 SBINARYURL="git://github.com/adriaanm/sbinary.git"
 SBTURL="git://github.com/adriaanm/sbt.git"
 SCALARIFORMURL="git://github.com/mdr/scalariform.git"
-REFACURL="git://github.com/scala-ide/scala-refactoring.git"
+REFACURL="git://github.com/adriaanm/scala-refactoring.git"
 IDEURL="git://github.com/scala-ide/scala-ide.git"
 
 function usage() {
