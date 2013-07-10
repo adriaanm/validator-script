@@ -338,7 +338,7 @@ function sbinarybuild(){
     set +e
     sbt $SBT_ARGS "reboot full" clean "show scala-instance" \
   "set every scalaVersion := \"$SCALAVERSION-$SCALAHASH-SNAPSHOT\""\
-  'set (version in core) ~= { v => v + "-pretending-SNAPSHOT" }' \
+  "set (version in core) := \"$SBINARYVERSION\"" \
   "set every crossScalaVersions := Seq(\"$SCALAVERSION-$SCALAHASH-SNAPSHOT\")"\
   'set every scalaBinaryVersion <<= scalaVersion.identity' \
   'set (libraryDependencies in core) ~= { _ filterNot (_.configurations.map(_ contains "test").getOrElse(false)) }' \
