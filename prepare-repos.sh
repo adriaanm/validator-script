@@ -8,7 +8,7 @@ SBINARYURL="git://github.com/harrah/sbinary.git"
 SBTURL="git://github.com/sbt/sbt.git"
 SCALARIFORMURL="git://github.com/mdr/scalariform.git"
 REFACURL="git://github.com/scala-ide/scala-refactoring.git"
-IDEURL="git://github.com/scala-ide/scala-ide.git"
+IDEURL="git://github.com/adriaanm/scala-ide.git"
 
 function usage() {
     echo "Usage : $0 [-s <scala-commit>] [-b <basedir>]"
