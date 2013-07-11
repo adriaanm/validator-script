@@ -569,7 +569,7 @@ fi
 
 # Remove .sbt/repositories scaffolding
 (test cleanupsbt) || exit 125
-(pushd $SBTDIR && git checkout origin/HEAD && popd) || exit 125
+(pushd $SBTDIR && git checkout project/build.properties && popd) || exit 125
 
 
 ########################
